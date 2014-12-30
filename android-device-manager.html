@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+# android设备管理器 #
+- **1.android设备管理器（只有提示用户激活后，才可以使用）--`DevicePolicyManager`**：
+
+    - 使用到三个类：
+        - DevicePolicyManager
+        密码定义的长度，密码是否要含大写字母，小写字母等设置密码需要满足的规范，锁定设备或是清除所有用户数据，`要配合DeviceAdminReceiver来使用`
+        方法：
+            - 1.进行锁屏操作
+            
+                    mDevicePolicyManager.lockNow()
+
+            - `2.`  设置屏幕灯光变暗时间相关
+                    long timeout = 1000L * Long.parseLong(et.getText().toString()); 
+	                mDevicePolicyManager.setMaximumTimeToLock(mDeviceComponentName, timeout); 
+            	    mDevicePolicyManager.wipeData(0);
+            - `3.`  恢复出厂设置
+                    mDevicePolicyManager.wipeData(0);
+        - DeviceAdminReceiver
+        该类继承自 BroadcastReceiver 。 从源码可以看到，其实就是实现了一个OnReceive方法，该方法中根据不同的Action，执行相应的操作。 比如，如果激活成功，那么Action就是ACTION_DEVICE_ADMIN_ENABLED， 据此调用 onEnabled 方法。
+        - DeviceAdminInfo
+        包括设备信息，Info,就是Information嘛，呵，，乱猜也可以猜到，至于里面什么属性，到时候朋友们可以直接"."下就知道啦
+    - 实现步骤：
+        - 1.在androidmanifest.xml中注册一个广播类，用于监听权限的变化
+
+                <!-- configuration authority -->
+                <receiver
+                    android:name=".AdminReceiver"
+                    android:description="@string/description"
+                    android:label="@string/labelValue"
+                    android:permission="android.permission.BIND_DEVICE_ADMIN"
+                    ><!--表示此功能需要的权限-->
+                     <meta-data 
+                        android:name="android.app.device_admin"
+        				android:resource="@xml/lockourscreen"/><!--表示这个应用可以管理的权限清单。-->
+        			<intent-filter>
+        			    <!-- skip to the view -->
+        				<action android:name="android.app.action.DEVICE_ADMIN_ENABLED" /><!--表示此动作的跳转界面-->
+        			</intent-filter>
+                    
+                </receiver>
+        - 2. 创建管理权限的清单：--》早`res`的文件夹下创建一个`xml`文件夹，再创建`lockourscreen.xml`
+
+                    <?xml version="1.0" encoding="UTF-8"?>
+                        <!-- device of authority -->
+                        <device-admin
+                          xmlns:android="http://schemas.android.com/apk/res/android">
+                            <uses-policies>
+                            	<!-- 强行锁定 -->
+                                <force-lock />
+                                
+                                <!--  因为今天我们只讲下简单的，所以其它的权限，小马先暂时注释掉咯，有兴趣的朋友们可以打开自己试下-->
+                                	 <!-- 清除所有数据（恢复出厂设置）-->
+                                	 <wipe-data /> 
+                                	 <!-- 重置密码 -->
+                               		 <reset-password />
+                                	 <!-- 限制密码选择-->
+                                	 <limit-password /> 
+                                	 <!-- 监控登录尝试 -->
+                                  	 <watch-login />
+                            </uses-policies>
+                        </device-admin>
+                        
+            `<uses-policies></uses-policies>`中间的内容是可以不要的。因为这部分是系统给的提示语，而我们在自己做程序的时候，可以输入自己想写的内容。
+        - 3.创建广播类deviceAdminReceiver 继承DeviceAdminReceiver并且实现相应的方法
+        - 4.激活相关管理权限的操作的操作
+
+                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        		
+        		//权限列表
+        		//EXTRA_DEVICE_ADMIN参数中说明了用到哪些权限， 
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+                
+                //描述(additional explanation)
+                //EXTRA_ADD_EXPLANATION参数为附加的说明
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "--小马坏，小马爱，小马瓜瓜怪--");
+                
+                startActivityForResult(intent, 0);
+        - 5.实现锁屏，等操作
+
+            mDevicePolicyManager.lockNow();
+
+        
+            
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<h1 id="android">android设备管理器</h1>
+
+<ul>
+<li><p><strong>1.android设备管理器（只有提示用户激活后，才可以使用）--<code>DevicePolicyManager</code></strong>：</p>
+
+<ul><li><p>使用到三个类：</p>
+
+<ul><li><p>DevicePolicyManager
+密码定义的长度，密码是否要含大写字母，小写字母等设置密码需要满足的规范，锁定设备或是清除所有用户数据，<code>要配合DeviceAdminReceiver来使用</code>
+方法：</p>
+
+<ul><li><p>1.进行锁屏操作</p>
+
+<pre><code>mDevicePolicyManager.lockNow()
+</code></pre></li>
+<li><p><code>2.</code>  设置屏幕灯光变暗时间相关
+    long timeout = 1000L * Long.parseLong(et.getText().toString()); 
+    mDevicePolicyManager.setMaximumTimeToLock(mDeviceComponentName, timeout); 
+    mDevicePolicyManager.wipeData(0);</p></li>
+<li><code>3.</code>  恢复出厂设置
+    mDevicePolicyManager.wipeData(0);</li></ul></li>
+<li>DeviceAdminReceiver
+该类继承自 BroadcastReceiver 。 从源码可以看到，其实就是实现了一个OnReceive方法，该方法中根据不同的Action，执行相应的操作。 比如，如果激活成功，那么Action就是ACTION<em>DEVICE</em>ADMIN_ENABLED， 据此调用 onEnabled 方法。</li>
+<li>DeviceAdminInfo
+包括设备信息，Info,就是Information嘛，呵，，乱猜也可以猜到，至于里面什么属性，到时候朋友们可以直接"."下就知道啦</li></ul></li>
+<li><p>实现步骤：</p>
+
+<ul><li><p>1.在androidmanifest.xml中注册一个广播类，用于监听权限的变化</p>
+
+<pre><code>&lt;!-- configuration authority --&gt;
+&lt;receiver
+    android:name=".AdminReceiver"
+    android:description="@string/description"
+    android:label="@string/labelValue"
+    android:permission="android.permission.BIND_DEVICE_ADMIN"
+    &gt;&lt;!--表示此功能需要的权限--&gt;
+     &lt;meta-data 
+        android:name="android.app.device_admin"
+        android:resource="@xml/lockourscreen"/&gt;&lt;!--表示这个应用可以管理的权限清单。--&gt;
+    &lt;intent-filter&gt;
+        &lt;!-- skip to the view --&gt;
+        &lt;action android:name="android.app.action.DEVICE_ADMIN_ENABLED" /&gt;&lt;!--表示此动作的跳转界面--&gt;
+    &lt;/intent-filter&gt;
+
+
+&lt;/receiver&gt;
+</code></pre></li>
+<li><ol><li><p>创建管理权限的清单：--》早<code>res</code>的文件夹下创建一个<code>xml</code>文件夹，再创建<code>lockourscreen.xml</code></p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    &lt;!-- device of authority --&gt;
+    &lt;device-admin
+      xmlns:android="http://schemas.android.com/apk/res/android"&gt;
+        &lt;uses-policies&gt;
+            &lt;!-- 强行锁定 --&gt;
+            &lt;force-lock /&gt;
+
+
+<pre><code>        &amp;lt;!--  因为今天我们只讲下简单的，所以其它的权限，小马先暂时注释掉咯，有兴趣的朋友们可以打开自己试下--&amp;gt;
+             &amp;lt;!-- 清除所有数据（恢复出厂设置）--&amp;gt;
+             &amp;lt;wipe-data /&amp;gt; 
+             &amp;lt;!-- 重置密码 --&amp;gt;
+                &amp;lt;reset-password /&amp;gt;
+             &amp;lt;!-- 限制密码选择--&amp;gt;
+             &amp;lt;limit-password /&amp;gt; 
+             &amp;lt;!-- 监控登录尝试 --&amp;gt;
+               &amp;lt;watch-login /&amp;gt;
+    &amp;lt;/uses-policies&amp;gt;
+&amp;lt;/device-admin&amp;gt;
+</code></pre>
+
+</code></pre></li></ol>
+
+<p><code>&lt;uses-policies&gt;&lt;/uses-policies&gt;</code>中间的内容是可以不要的。因为这部分是系统给的提示语，而我们在自己做程序的时候，可以输入自己想写的内容。</p></li>
+<li>3.创建广播类deviceAdminReceiver 继承DeviceAdminReceiver并且实现相应的方法</li>
+<li><p>4.激活相关管理权限的操作的操作</p>
+
+<pre><code>Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+
+
+//权限列表
+//EXTRA_DEVICE_ADMIN参数中说明了用到哪些权限， 
+intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+
+
+//描述(additional explanation)
+//EXTRA_ADD_EXPLANATION参数为附加的说明
+intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "--小马坏，小马爱，小马瓜瓜怪--");
+
+
+startActivityForResult(intent, 0);
+</code></pre></li>
+<li><p>5.实现锁屏，等操作</p>
+
+<p>mDevicePolicyManager.lockNow();</p></li></ul></li></ul></li>
+</ul>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "android-device-manager.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
