@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+
+- `1.` ListActivity解析
+    - ListActivity的默认布局由一个位于屏幕中心的全屏列表构成。
+    如果你不想使用默认的布局，可以在`onCreate()`方法中通过`setContentView()`方法设定你自己的布局
+        - 布局必须制定下列参数
+            - 包含一个id为"`@id/android:list`"的`ListView`
+        - 可选项：
+            - 一个id为"`@id/android:empty`"的`view`
+            当`ListView中没有数据要显示`时，这个`view就会被显示`，同时 **ListView会被隐藏**
+                    <?xml version="1.0" encoding="utf-8"?>
+                    
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical" 
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" 
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+                    
+                    <!-- 除了ListView和id为@id/android:empty的view之外，我们还可以任意添加view -->
+                    
+                    <TextView 
+                    android:id="@+id/android:title" 
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" 
+                    android:text="The following is a list:" />
+                    
+                    <!-- id为@id/android:list的ListView为客户化的list布局，如果没有，则系统会调用默认的布局 -->
+                    
+                    <ListView 
+                    android:id="@id/android:list" 
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" 
+                    android:background="#00FF00"
+                    android:layout_weight="1" 
+                    android:drawSelectorOnTop="false" />
+                    
+                    <!-- 当ListView中没有数据时，id为@id/android:empty的view就会显示出来 -->
+                    
+                    <TextView 
+                    android:id="@id/android:empty" 
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" 
+                    android:textColor="#FF0000"
+                    android:text="No data" 
+                    android:gravity="center_vertical|center_horizontal" />
+                    
+                    </LinearLayout>
+java代码：
+
+                    package EOE.android;
+                    import java.util.ArrayList;
+                    import java.util.List;
+                    import android.app.ListActivity;
+                    import android.os.Bundle;
+                    import android.widget.ArrayAdapter;
+                    
+                    public class ListActivityDemo extends ListActivity {
+                    
+                    /** Called when the activity is first created. */
+                    
+                    @Override
+                    public void onCreate(Bundle savedInstanceState) {
+                    
+                    super.onCreate(savedInstanceState);
+                    
+                    setContentView(R.layout.main);
+                    //因为有默认的listview，并且制定了id，所以就不用得到id了。
+                    List<String> items = fillList();
+                    
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, items);
+                    
+                    setListAdapter(adapter);
+                    }
+                    private List<String> fillList() {
+                    List<String> items = new ArrayList<String>();
+                    items.add("星期一");
+                    items.add("星期二");
+                    items.add("星期三");
+                    items.add("星期四");
+                    items.add("星期五");
+                    items.add("星期六");
+                    items.add("星期日");
+                    
+                    //items.clear();
+                    
+                    return items;
+                    
+                    }
+                    
+                    }
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<ul>
+<li><p><code>1.</code> ListActivity解析</p>
+
+<ul><li><p>ListActivity的默认布局由一个位于屏幕中心的全屏列表构成。
+如果你不想使用默认的布局，可以在<code>onCreate()</code>方法中通过<code>setContentView()</code>方法设定你自己的布局</p>
+
+<ul><li>布局必须制定下列参数
+<ul><li>包含一个id为"<code>@id/android:list</code>"的<code>ListView</code></li></ul></li>
+<li><p>可选项：</p>
+
+<ul><li><p>一个id为"<code>@id/android:empty</code>"的<code>view</code>
+当<code>ListView中没有数据要显示</code>时，这个<code>view就会被显示</code>，同时 <strong>ListView会被隐藏</strong>
+    <!--?xml version="1.0" encoding="utf-8"?--></p>
+
+<pre><code>&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical" 
+android:layout_width="match_parent"
+android:layout_height="match_parent" 
+android:paddingLeft="8dp"
+android:paddingRight="8dp"&gt;
+
+
+&lt;!-- 除了ListView和id为@id/android:empty的view之外，我们还可以任意添加view --&gt;
+
+
+&lt;TextView 
+android:id="@+id/android:title" 
+android:layout_width="match_parent"
+android:layout_height="wrap_content" 
+android:text="The following is a list:" /&gt;
+
+
+&lt;!-- id为@id/android:list的ListView为客户化的list布局，如果没有，则系统会调用默认的布局 --&gt;
+
+
+&lt;ListView 
+android:id="@id/android:list" 
+android:layout_width="match_parent"
+android:layout_height="match_parent" 
+android:background="#00FF00"
+android:layout_weight="1" 
+android:drawSelectorOnTop="false" /&gt;
+
+
+&lt;!-- 当ListView中没有数据时，id为@id/android:empty的view就会显示出来 --&gt;
+
+
+&lt;TextView 
+android:id="@id/android:empty" 
+android:layout_width="match_parent"
+android:layout_height="match_parent" 
+android:textColor="#FF0000"
+android:text="No data" 
+android:gravity="center_vertical|center_horizontal" /&gt;
+
+
+&lt;/LinearLayout&gt;
+</code></pre>
+
+<p>java代码：</p>
+
+<pre><code>package EOE.android;
+import java.util.ArrayList;
+import java.util.List;
+import android.app.ListActivity;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+
+
+public class ListActivityDemo extends ListActivity {
+
+
+/** Called when the activity is first created. */
+
+
+@Override
+public void onCreate(Bundle savedInstanceState) {
+
+
+super.onCreate(savedInstanceState);
+
+
+setContentView(R.layout.main);
+//因为有默认的listview，并且制定了id，所以就不用得到id了。
+List&lt;String&gt; items = fillList();
+
+
+ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this,android.R.layout.simple_list_item_1, items);
+
+
+setListAdapter(adapter);
+}
+private List&lt;String&gt; fillList() {
+List&lt;String&gt; items = new ArrayList&lt;String&gt;();
+items.add("星期一");
+items.add("星期二");
+items.add("星期三");
+items.add("星期四");
+items.add("星期五");
+items.add("星期六");
+items.add("星期日");
+
+
+//items.clear();
+
+
+return items;
+
+
+}
+
+
+}
+</code></pre></li></ul></li></ul></li></ul></li>
+</ul>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "2014-12-31-android-listactivity.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
